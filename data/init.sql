@@ -1,3 +1,8 @@
-SELECT 'CREATE DATABASE project' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'project');
-CREATE USER berg WITH PASSWORD 'danielberg';
-GRANT ALL PRIVILEGES ON DATABASE project TO berg;
+CREATE USER docker;
+CREATE DATABASE docker;
+GRANT ALL PRIVILEGES ON DATABASE docker TO docker;
+ALTER TABLE public."project" OWNER TO docker;
+
+CREATE DATABASE tests;
+GRANT ALL PRIVILEGES ON DATABASE tests TO docker;
+ALTER TABLE public."tests" OWNER TO docker;

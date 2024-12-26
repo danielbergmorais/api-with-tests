@@ -2,12 +2,20 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const Sequelize = require('sequelize');
 
-//index.js
 (async () => {
+
+    //test connection
+    var sequelize = new Sequelize("postgres", "postgres", "postgres", {
+        dialect: 'postgres'
+    });
+
+    sequelize.authenticate().then(function(errors) { console.log(errors) });
+
+   
     const User = require('./models/user');
 
     try {
-        /*
+        
         let password = '123456789'
         bcrypt
             .hash(password, saltRounds)
@@ -25,9 +33,9 @@ const Sequelize = require('sequelize');
             where: {
                 name: 'Daniel',
             },
-        });*/
+        }); 
 
-        //const user = await User.findByPk('5e3e7364-bdcf-4252-9c31-0295b92673f7', {});
+
         const user = await User.findOne({ where: { email: 'danielbergmorais@dev.com' } });
         if (user === null) {
             console.log('Not found!');
