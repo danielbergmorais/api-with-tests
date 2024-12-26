@@ -23,3 +23,5 @@ node_modules/
 
 data/pg/
 data/pgadmin/
+
+coverage/

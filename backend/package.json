@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "test": "jest --passWithNoTests --detectOpenHandles --coverage",
+    "start": "node index.js",
+    "dev": "node start.js"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +22,7 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "sequelize-cli": "^6.6.2"
+    "sequelize-cli": "^6.6.2",
+    "supertest": "^7.0.0"
   }
 }

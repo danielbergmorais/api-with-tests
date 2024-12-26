@@ -21,9 +21,9 @@ const Sequelize = require('sequelize');
             .hash(password, saltRounds)
             .then(async hash => {
                 const resultadoCreate = await User.create({
-                    name: 'Daniel',
-                    email: 'danielbergmorais@dev.com',
-                    password: hash//, (err, hash)
+                    name: 'User one',
+                    email: 'user@email.com',
+                    password: hash
                 })
                 console.log(resultadoCreate);
             })
@@ -31,17 +31,17 @@ const Sequelize = require('sequelize');
             
         const result = User.findAll({
             where: {
-                name: 'Daniel',
+                name: 'User one',
             },
         }); 
 
 
-        const user = await User.findOne({ where: { email: 'danielbergmorais@dev.com' } });
+        const user = await User.findOne({ where: { email: 'user@email' } });
         if (user === null) {
             console.log('Not found!');
         } else {
             User.update(
-                { name: 'Daniel' },
+                { name: 'User two' },
                 {
                     where: {
                         id: user.id,

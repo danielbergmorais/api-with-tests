@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
+const isUUID = require ('../helpers/checkType');
 
 const saltRounds = 10;
 
@@ -11,9 +12,13 @@ const create = async (req, res) => {
             message: "Email já registrado"
         })
     } else {
+
         bcrypt
             .hash(req.body.password, saltRounds)
             .then(async hash => {
+                if( req.body.password.length == 0 ) {
+                    throw  new Error('Senha não pode estar vazia');
+                }
                 await User.create({
                     name: req.body.name,
                     email: req.body.email,
@@ -41,9 +46,14 @@ const create = async (req, res) => {
 
 const get = async (req, res) => {
 
-    const user = await User.findOne({ where: { id: req.params.id } });
+    let user;
+    if(isUUID(req.params.id )){
+        user = await User.findOne({ where: { id: req.params.id } });
+    } else {
+        user = await User.findOne({ where: { email: req.params.id } });
+    }
 
-    if (user === null) {
+    if (user == null) {
         res.status(404).json({
             message: "Usuário não encontrado"
         })
@@ -57,10 +67,12 @@ const get = async (req, res) => {
 
 const update = async (req, res) => {
 
-    const user = await User.findOne({ where: { id: req.body.id } });
+    let user;
+
+    user = await User.findOne({ where: { email: req.body.email } });
     let userUpdate = null
 
-    if (user === null) {
+    if (user == null) {
         res.status(404).json({
             message: "Usuário não encontrado"
         })
@@ -96,7 +108,7 @@ const update = async (req, res) => {
             userUpdate = await User.update(
                 {
                     name: req.body.name,
-                    email: req.body.email,
+                    email: req.body.new_email,
                 },
                 {
                     where: {
@@ -105,10 +117,11 @@ const update = async (req, res) => {
                     returning: true,
                 },
             )
+            await user.reload()
         }
         if (!userUpdate) {
             res.status(400).json({
-                message: "Erro ao atualizar usuario"
+                message: "Erro ao atualizar usuário"
             })
         } else {
             await user.reload()
@@ -121,8 +134,9 @@ const update = async (req, res) => {
 }
 
 const remove = async (req, res) => {
+    var user; 
 
-    const user = await User.findOne({ where: { id: req.body.id } });
+    user = await User.findOne({ where: { email: req.body.email } });
 
     if (user === null) {
         res.status(404).json({
