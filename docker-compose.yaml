@@ -1,0 +1,36 @@
+# myApp/docker-compose.yaml
+services:
+  postgres:
+    build:
+      context: .
+      dockerfile: ./data/Dockerfile
+    container_name: postgres
+    platform: linux/x86_64
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data/pg:/var/lib/postgresql/data  
+    networks:
+      - internal
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: danielbergmorais@outlook.com
+      PGADMIN_DEFAULT_PASSWORD: bergdev
+    ports:
+      - 8080:80
+    volumes:
+      - ./data/pgadmin:/var/lib/pgadmin
+    networks:
+      - internal
+networks:
+  internal:
+    driver: bridge

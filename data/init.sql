@@ -1,0 +1,3 @@
+SELECT 'CREATE DATABASE project' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'project');
+CREATE USER berg WITH PASSWORD 'danielberg';
+GRANT ALL PRIVILEGES ON DATABASE project TO berg;
