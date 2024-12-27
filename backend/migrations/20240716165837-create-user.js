@@ -1,4 +1,5 @@
-'use strict';
+'use strict'
+ 
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -8,25 +9,25 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
       },
       name: {
         type: Sequelize.STRING(128),
-        allowNull: false
+        allowNull: false,
       },
       email: {
         type: Sequelize.STRING(128),
         unique: true,
-        allowNull: false
+        allowNull: false,
       },
       password: {
         type: Sequelize.STRING(255),
-        allowNull: false
-      }
+        allowNull: false,
+      },
     })
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('users');
-  }
-};
+    await queryInterface.dropTable('users')
+  },
+}

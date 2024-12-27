@@ -1,21 +1,18 @@
-const express = require("express")
-const routes = require('./routes/user.routes.js');
-const routesAuth = require('./routes/auth.routes.js');
+const express = require('express')
+const routes = require('./routes/user.routes.js')
+const routesAuth = require('./routes/auth.routes.js')
 
-require('dotenv/config');
+require('dotenv/config')
 
-// Initialization 
+// Initialization
 const app = express()
-const port = process.env.PORT;
 
-// Middlewares 
-app.use(express.json());
+// Middlewares
+app.use(express.json())
 
 // Routes
-app.use('/', routes);
+app.use('/', routes)
 // Auth
-app.use('/auth/', routesAuth);
+app.use('/auth/', routesAuth)
 
-
-
-module.exports = app;
+module.exports = app

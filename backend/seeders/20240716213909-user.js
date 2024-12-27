@@ -1,5 +1,5 @@
-'use strict';
-
+'use strict'
+ 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -7,17 +7,17 @@ module.exports = {
       {
         name: 'John Doe',
         email: 'john@email.com',
-        password: '123456'
+        password: '123456',
       },
       {
         name: 'Jane Doe',
         email: 'jane@email.com',
-        password: '654321'
+        password: '654321',
       },
-    ]);
+    ])
   },
 
   async down(queryInterface, Sequelize) {
-    return queryInterface.bulkDelete('Users', null, {});
-  }
-};
+    return queryInterface.bulkDelete('Users', null, {})
+  },
+}
