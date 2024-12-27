@@ -2,8 +2,6 @@
 //IT or TEST -> Teste unitario - Test case
 //EXPECT -> asserçoes do resultado
 
-const userController = require('../../controllers/userController');
-
 const app = require("../../app"); // Link to your server file
 const supertest = require("supertest");
 const request = supertest(app);
@@ -44,7 +42,7 @@ describe('Usuário', ()=> {
             })
         })
 
-        describe('Get', ()=> {
+        describe('Read', ()=> {
             it("Usuário encontrado! Code [200]", async() => {
                 
                 const userEmail = 'test@email.com';
@@ -63,7 +61,7 @@ describe('Usuário', ()=> {
 
         })
 
-        describe('Listagem', ()=> {
+        describe('List', ()=> {
             it("Deverá ter status 200", async() => {
                 await request.get('/users').expect(200)
             })
@@ -107,7 +105,6 @@ describe('Usuário', ()=> {
                 await request.delete('/users/11ab7ac7-ee0c-49c4-b0a1-adc7b5bb4587').send(user).expect(404)
             })
         })
-
         
     })
 })

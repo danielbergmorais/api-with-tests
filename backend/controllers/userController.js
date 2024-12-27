@@ -1,6 +1,6 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
-const isUUID = require ('../helpers/checkType');
+const isUUID = require ('../helpers/checkUUID');
 
 const saltRounds = 10;
 

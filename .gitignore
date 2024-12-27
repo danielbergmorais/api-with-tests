@@ -25,3 +25,4 @@ data/pg/
 data/pgadmin/
 
 coverage/
+package-lock.json
