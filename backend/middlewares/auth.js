@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 require('dotenv/config')
 const { isTokenExpired } = require('../helpers')
+const messages = require('../languages/pt-BR')
 
 const authMiddleware = (req, res, next) => {
   try {
@@ -11,7 +12,7 @@ const authMiddleware = (req, res, next) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: 'Não esta logado!',
+        message: messages['token_invalid'],
       })
     }
 
@@ -19,14 +20,14 @@ const authMiddleware = (req, res, next) => {
     if (isTokenExpired(token)) {
       return res.status(401).json({
         success: false,
-        message: 'Token Expirado',
+        message: messages['token_expired'],
       })
     }
 
     if (!jwt.verify(token, process.env.SECRET_KEY)) {
       return res.status(401).json({
         success: false,
-        message: 'Token inválido',
+        message: messages['token_invalid'],
       })
     }
 

@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt')
 const saltRounds = 10
 const Sequelize = require('sequelize')
 
-;async () => {
+const example = async () => {
   //test connection
   var sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
     dialect: 'postgres',
@@ -45,3 +45,5 @@ const Sequelize = require('sequelize')
     console.log(error)
   }
 }
+
+module.exports = example

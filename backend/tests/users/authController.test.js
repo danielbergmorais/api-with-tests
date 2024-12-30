@@ -4,6 +4,7 @@ const app = require('../../app')
 const supertest = require('supertest')
 const request = supertest(app)
 const jwt = require('jsonwebtoken')
+const messages = require('../../languages/pt-BR')
 require('dotenv/config')
 
 describe('Autenticação', () => {
@@ -16,6 +17,7 @@ describe('Autenticação', () => {
 
       const { body, statusCode } = await request.post('/auth/signin').send(user)
       expect(statusCode).toBe(200)
+      expect(body.message).toBe(messages['user-login'])
       expect(jwt.verify(body.token, process.env.SECRET_KEY)).toBeTruthy()
     })
 
@@ -25,7 +27,11 @@ describe('Autenticação', () => {
         password: '123456',
       }
 
-      await request.post('/auth/signin').send(user).expect(404)
+      const { body, statusCode } = await request.post('/auth/signin').send(user)
+
+      expect(statusCode).toBe(404)
+      expect(body.success).toBeFalsy()
+      expect(body.message).toBe(messages['user-not_found'])
     })
 
     it('Senha incorreta! Code[401]', async () => {
@@ -34,7 +40,11 @@ describe('Autenticação', () => {
         password: '1234567',
       }
 
-      await request.post('/auth/signin').send(user).expect(401)
+      const { body, statusCode } = await request.post('/auth/signin').send(user)
+
+      expect(statusCode).toBe(401)
+      expect(body.success).toBeFalsy()
+      expect(body.message).toBe(messages['user-login-wrong_password'])
     })
 
     it('Não é email! Code[401]', async () => {
@@ -43,7 +53,11 @@ describe('Autenticação', () => {
         password: '123456',
       }
 
-      await request.post('/auth/signin').send(user).expect(401)
+      const { body, statusCode } = await request.post('/auth/signin').send(user)
+
+      expect(statusCode).toBe(401)
+      expect(body.success).toBeFalsy()
+      expect(body.message).toBe(messages['user-login-invalid_email'])
     })
 
     it('Não é email! Code[401]', async () => {
@@ -52,7 +66,11 @@ describe('Autenticação', () => {
         password: '123456',
       }
 
-      await request.post('/auth/signin').send(user).expect(401)
+      const { body, statusCode } = await request.post('/auth/signin').send(user)
+
+      expect(statusCode).toBe(401)
+      expect(body.success).toBeFalsy()
+      expect(body.message).toBe(messages['user-login-invalid_email'])
     })
 
     it('Não tem email! Code[401]', async () => {
@@ -60,14 +78,22 @@ describe('Autenticação', () => {
         password: '123456',
       }
 
-      await request.post('/auth/signin').send(user).expect(401)
+      const { body, statusCode } = await request.post('/auth/signin').send(user)
+
+      expect(statusCode).toBe(401)
+      expect(body.success).toBeFalsy()
+      expect(body.message).toBe(messages['user-login-invalid_email'])
     })
 
     it('Não tem senha! Code[401]', async () => {
       const user = {
         email: 'jane@email.com',
       }
-      await request.post('/auth/signin').send(user).expect(401)
+      const { body, statusCode } = await request.post('/auth/signin').send(user)
+
+      expect(statusCode).toBe(401)
+      expect(body.success).toBeFalsy()
+      expect(body.message).toBe(messages['user-login-empty_password'])
     })
   })
 
@@ -81,6 +107,7 @@ describe('Autenticação', () => {
         .set('Authorization', 'Bearer ' + token)
       expect(statusCode).toBe(200)
       expect(body.success).toBeTruthy()
+      expect(body.message).toBe(messages['logged'])
     })
 
     it('Usuario utilizou o token expirado! Code [401]', async () => {
@@ -91,7 +118,8 @@ describe('Autenticação', () => {
         .get('/auth/protected')
         .set('Authorization', 'Bearer ' + token)
       expect(statusCode).toBe(401)
-      expect(!body.success).toBeTruthy()
+      expect(body.success).toBeFalsy()
+      expect(body.message).toBe(messages['token_expired'])
     })
 
     it('Usuario utilizou o token incorreto! Code [500]', async () => {
@@ -104,7 +132,7 @@ describe('Autenticação', () => {
 
       expect(statusCode).toBe(500)
       expect(body.message).toBe('invalid signature')
-      expect(!body.success).toBeTruthy()
+      expect(body.success).toBeFalsy()
     })
 
     it('Usuario sem o token! Code [401]', async () => {
@@ -113,8 +141,10 @@ describe('Autenticação', () => {
       const { body, statusCode } = await request
         .get('/auth/protected')
         .set('Authorization', 'Bearer ' + token)
+
       expect(statusCode).toBe(401)
-      expect(!body.success).toBeTruthy()
+      expect(body.message).toBe(messages['token_invalid'])
+      expect(body.success).toBeFalsy()
     })
   })
 })

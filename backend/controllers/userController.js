@@ -1,7 +1,7 @@
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const { isUUID, isValidEmail } = require('../helpers/')
-
+const messages = require('../languages/pt-BR')
 const saltRounds = 10
 
 const create = async (req, res) => {
@@ -9,20 +9,20 @@ const create = async (req, res) => {
     if (!req.body.email && !isValidEmail(req.body.email)) {
       res.status(405).json({
         success: false,
-        message: 'Chamada de API não permitida',
+        message: messages['not_allowed'],
       })
     } else {
       const user = await User.findOne({ where: { email: req.body.email } })
       if (user !== null) {
         res.status(409).json({
           success: false,
-          message: 'Email já registrado',
+          message: messages['user-create-duplicate'],
         })
       } else {
         if (req.body.password.length == 0) {
           res.status(400).json({
             success: false,
-            message: 'Senha não pode estar vazia',
+            message: messages['user-create-empty_password'],
           })
         } else {
           bcrypt
@@ -35,7 +35,7 @@ const create = async (req, res) => {
               }).then((resultCreate) => {
                 res.status(201).send({
                   success: true,
-                  message: 'Usuário criado',
+                  message: messages['user-create'],
                   user: {
                     id: resultCreate.id,
                     name: resultCreate.name,
@@ -47,7 +47,7 @@ const create = async (req, res) => {
             .catch((err) => {
               res.status(418).json({
                 success: false,
-                message: 'Erro ao gerar a senha',
+                message: messages['user-error_password'],
               })
             })
         }
@@ -72,12 +72,12 @@ const get = async (req, res) => {
   if (user == null) {
     res.status(404).json({
       success: false,
-      message: 'Usuário não encontrado',
+      message: messages['user-not_found'],
     })
   } else {
     res.status(200).json({
       success: true,
-      message: 'Usuário retornado',
+      message: messages['user-get'],
       user: user,
     })
   }
@@ -87,7 +87,7 @@ const update = async (req, res) => {
   if (!req.body.email && !isValidEmail(req.body.email)) {
     res.status(405).json({
       success: false,
-      message: 'Chamada de API não permitida',
+      message: messages['not_allowed'],
     })
   } else {
     let user
@@ -98,7 +98,7 @@ const update = async (req, res) => {
     if (user == null) {
       res.status(404).json({
         success: false,
-        message: 'Usuário não encontrado',
+        message: messages['user-not_found'],
       })
     } else {
       if (req.body.password !== null && req.body.password.length > 0) {
@@ -123,7 +123,7 @@ const update = async (req, res) => {
             console.error(err.message)
             res.status(418).json({
               success: false,
-              message: 'Erro ao gerar a senha',
+              message: messages['user-error_password'],
             })
           })
       } else {
@@ -144,13 +144,13 @@ const update = async (req, res) => {
       if (!userUpdate) {
         res.status(400).json({
           success: false,
-          message: 'Erro ao atualizar usuário',
+          message: messages['user-update-error'],
         })
       } else {
         await user.reload()
         res.status(200).json({
           success: true,
-          message: 'Usuário atualizado!',
+          message: messages['user-update'],
           user: user,
         })
       }
@@ -164,7 +164,7 @@ const remove = async (req, res) => {
   if (!req.params.id && !req.body.email && !isValidEmail(req.body.email)) {
     res.status(405).json({
       success: false,
-      message: 'Chamada de API não permitida',
+      message: messages['not_allowed'],
     })
   } else {
     if (isUUID(req.params.id)) {
@@ -176,13 +176,13 @@ const remove = async (req, res) => {
     if (user === null) {
       res.status(404).json({
         success: false,
-        message: 'Usuário não encontrado',
+        message: messages['user-not_found'],
       })
     } else {
       await user.destroy()
       res.status(200).json({
         success: true,
-        message: 'Usuário removido',
+        message: messages['user-delete'],
       })
     }
   }
@@ -196,12 +196,12 @@ const list = async (req, res) => {
   if (users === null) {
     res.status(404).json({
       success: false,
-      message: 'Usuários não foram encontrados',
+      message: messages['user-list-not_found'],
     })
   } else {
     res.status(200).json({
       success: true,
-      message: 'Usuários retornados',
+      message: messages['user-list'],
       users: users,
     })
   }

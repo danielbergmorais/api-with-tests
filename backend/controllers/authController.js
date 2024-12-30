@@ -2,6 +2,7 @@ const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { isValidEmail } = require('../helpers')
+const messages = require('../languages/pt-BR')
 require('dotenv/config')
 
 const saltRounds = 10
@@ -34,14 +35,14 @@ const signin = async (req, res) => {
     if (!req.body.email || !isValidEmail(req.body.email)) {
       return res.status(401).send({
         success: false,
-        message: 'Email inválido!',
+        message: messages['user-login-invalid_email'],
       })
     }
 
     if (!req.body.password) {
       return res.status(401).send({
         success: false,
-        message: 'Senha vazia!',
+        message: messages['user-login-empty_password'],
       })
     }
 
@@ -54,7 +55,7 @@ const signin = async (req, res) => {
     if (!userSearch) {
       return res.status(404).send({
         success: false,
-        message: 'Usuário não encontrado!',
+        message: messages['user-not_found'],
       })
     }
 
@@ -66,7 +67,7 @@ const signin = async (req, res) => {
     if (!passwordIsValid) {
       return res.status(401).send({
         success: false,
-        message: 'Senha incorreta!',
+        message: messages['user-login-wrong_password'],
       })
     }
 
@@ -81,7 +82,7 @@ const signin = async (req, res) => {
 
     return res.status(200).send({
       success: true,
-      message: 'Usuário logado!',
+      message: messages['user-login'],
       token: token,
       user: {
         id: userSearch.id,
@@ -101,7 +102,10 @@ const signout = async (req, res) => {
   try {
     req.session.token = null
   } catch (error) {
-    res.status(500).send({ message: error.message })
+    res.status(500).send({
+      success: false,
+      message: error.message,
+    })
   }
 }
 

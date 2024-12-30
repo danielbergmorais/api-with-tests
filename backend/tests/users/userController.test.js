@@ -3,6 +3,7 @@
 const app = require('../../app') // Link to your server file
 const supertest = require('supertest')
 const request = supertest(app)
+const messages = require('../../languages/pt-BR')
 
 describe('Usuário', () => {
   describe('Endpoint', () => {
@@ -18,7 +19,7 @@ describe('Usuário', () => {
 
         expect(statusCode).toBe(201)
         expect(body.success).toBeTruthy()
-        expect(body.message).toBe('Usuário criado')
+        expect(body.message).toBe(messages['user-create'])
       })
 
       it('Usuário duplicado! Code[409]', async () => {
@@ -32,7 +33,7 @@ describe('Usuário', () => {
 
         expect(statusCode).toBe(409)
         expect(body.success).toBeFalsy()
-        expect(body.message).toBe('Email já registrado')
+        expect(body.message).toBe(messages['user-create-duplicate'])
       })
 
       it('Erro na senha! Code[400]', async () => {
@@ -46,7 +47,7 @@ describe('Usuário', () => {
 
         expect(statusCode).toBe(400)
         expect(body.success).toBeFalsy()
-        expect(body.message).toBe('Senha não pode estar vazia')
+        expect(body.message).toBe(messages['user-create-empty_password'])
       })
     })
 
@@ -57,7 +58,7 @@ describe('Usuário', () => {
 
         expect(statusCode).toBe(200)
         expect(body.success).toBeTruthy()
-        expect(body.message).toBe('Usuário retornado')
+        expect(body.message).toBe(messages['user-get'])
       })
 
       it('Usuário NÃO encontrado! Code [404]', async () => {
@@ -66,7 +67,7 @@ describe('Usuário', () => {
 
         expect(statusCode).toBe(404)
         expect(body.success).toBeFalsy()
-        expect(body.message).toBe('Usuário não encontrado')
+        expect(body.message).toBe(messages['user-not_found'])
       })
 
       it('Usuário NÃO encontrado [UUID]! Code [404]', async () => {
@@ -75,7 +76,7 @@ describe('Usuário', () => {
 
         expect(statusCode).toBe(404)
         expect(body.success).toBeFalsy()
-        expect(body.message).toBe('Usuário não encontrado')
+        expect(body.message).toBe(messages['user-not_found'])
       })
     })
 
@@ -85,7 +86,7 @@ describe('Usuário', () => {
 
         expect(statusCode).toBe(200)
         expect(body.success).toBeTruthy()
-        expect(body.message).toBe('Usuários retornados')
+        expect(body.message).toBe(messages['user-list'])
       })
     })
 
@@ -102,7 +103,7 @@ describe('Usuário', () => {
         expect(statusCode).toBe(200)
         expect(body.success).toBeTruthy()
         expect(body.user.name).toBe(user.name)
-        expect(body.message).toBe('Usuário atualizado!')
+        expect(body.message).toBe(messages['user-update'])
       })
 
       it('Usuário Não encontrado! Code [404]', async () => {
@@ -116,7 +117,7 @@ describe('Usuário', () => {
         const { body, statusCode } = await request.put('/users/').send(user)
         expect(statusCode).toBe(404)
         expect(body.success).toBeFalsy()
-        expect(body.message).toBe('Usuário não encontrado')
+        expect(body.message).toBe(messages['user-not_found'])
       })
     })
 
@@ -129,7 +130,7 @@ describe('Usuário', () => {
 
         expect(statusCode).toBe(200)
         expect(body.success).toBeTruthy()
-        expect(body.message).toBe('Usuário removido')
+        expect(body.message).toBe(messages['user-delete'])
       })
 
       it('Usuário não encontrado! Code [404]', async () => {
@@ -140,7 +141,7 @@ describe('Usuário', () => {
 
         expect(statusCode).toBe(404)
         expect(body.success).toBeFalsy()
-        expect(body.message).toBe('Usuário não encontrado')
+        expect(body.message).toBe(messages['user-not_found'])
       })
 
       it('Usuário não encontrado [ID]! Code [404]', async () => {
@@ -149,16 +150,16 @@ describe('Usuário', () => {
 
         expect(statusCode).toBe(404)
         expect(body.success).toBeFalsy()
-        expect(body.message).toBe('Usuário não encontrado')
+        expect(body.message).toBe(messages['user-not_found'])
       })
 
-      it('Usuário não encontrado! Code [405]', async () => {
+      it('Usuário deletar sem dados! Code [405]', async () => {
         const user = {}
         const { body, statusCode } = await request.delete('/users').send(user)
 
         expect(statusCode).toBe(405)
         expect(body.success).toBeFalsy()
-        expect(body.message).toBe('Chamada de API não permitida')
+        expect(body.message).toBe(messages['not_allowed'])
       })
     })
   })
