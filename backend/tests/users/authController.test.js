@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-const app = require('../../app') 
+const app = require('../../app')
 const supertest = require('supertest')
 const request = supertest(app)
 const jwt = require('jsonwebtoken')
@@ -37,37 +37,37 @@ describe('Autenticação', () => {
       await request.post('/auth/signin').send(user).expect(401)
     })
 
-    it('Não é email! Code[403]', async () => {
+    it('Não é email! Code[401]', async () => {
       const user = {
         email: 123,
         password: '123456',
       }
 
-      await request.post('/auth/signin').send(user).expect(403)
+      await request.post('/auth/signin').send(user).expect(401)
     })
 
-    it('Não é email! Code[403]', async () => {
+    it('Não é email! Code[401]', async () => {
       const user = {
         email: 'janeemail.com',
         password: '123456',
       }
 
-      await request.post('/auth/signin').send(user).expect(403)
+      await request.post('/auth/signin').send(user).expect(401)
     })
 
-    it('Não tem email! Code[403]', async () => {
+    it('Não tem email! Code[401]', async () => {
       const user = {
         password: '123456',
       }
 
-      await request.post('/auth/signin').send(user).expect(403)
+      await request.post('/auth/signin').send(user).expect(401)
     })
 
-    it('Não tem senha! Code[403]', async () => {
+    it('Não tem senha! Code[401]', async () => {
       const user = {
         email: 'jane@email.com',
       }
-      await request.post('/auth/signin').send(user).expect(403)
+      await request.post('/auth/signin').send(user).expect(401)
     })
   })
 
@@ -96,11 +96,12 @@ describe('Autenticação', () => {
 
     it('Usuario utilizou o token incorreto! Code [500]', async () => {
       const token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5NDBhOTBlLWViN2YtNGFmZS04MTE0LWQzMzFiNDY5NTA3MyIsImlhdCI6MTczNTMwNjk3MiwiZXhwIjoxNzM1MzkzMzcyfQ.x8mqn1qJ_GS24CY_zBfAlCYKL9hDBT5Fvel0YYaaxSY'
+        'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5NDBhOTBlLWViN2YtNGFmZS04MTE0LWQzMzFiNDY5NTA3MyIsImlhdCI6MTczNTMwODM0NCwiZXhwIjoxNzY2ODQ0MzQ0fQ.8cQkxS6fisrdPUWpYD18lhbCNdptqdekXedjH9QSxCUaROsgr55klHoIeJ1HoqbBMB7tpObUdd5VUpLiCWL8lQ'
 
       const { body, statusCode } = await request
         .get('/auth/protected')
         .set('Authorization', 'Bearer ' + token)
+
       expect(statusCode).toBe(500)
       expect(body.message).toBe('invalid signature')
       expect(!body.success).toBeTruthy()

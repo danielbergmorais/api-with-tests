@@ -5,7 +5,7 @@ import pluginJs from '@eslint/js'
 export default [
   {
     files: ['**/*.js'],
-    ignores: ['.coverage/','.tests/'],
+    ignores: ['.coverage/', '.tests/'],
     languageOptions: { sourceType: 'commonjs' },
   },
   {
@@ -27,7 +27,7 @@ export default [
           ignoreRestSiblings: false,
           reportUsedIgnorePattern: false,
         },
-      ]
+      ],
     },
   },
 ]

@@ -24,7 +24,7 @@ const authMiddleware = (req, res, next) => {
     }
 
     if (!jwt.verify(token, process.env.SECRET_KEY)) {
-      return res.status(403).json({
+      return res.status(401).json({
         success: false,
         message: 'Token inválido',
       })

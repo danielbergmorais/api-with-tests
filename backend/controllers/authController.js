@@ -15,21 +15,34 @@ const signup = async (req, res) => {
       password: bcrypt.hashSync(req.body.password, saltRounds),
     })
 
-    if (user) res.send({ message: 'Usuário criado' })
-    //precisa retornar o JWT apos criado
+    if (user)
+      res.send({
+        success: true,
+        message: 'Usuário criado',
+      })
+    //TODO precisa retornar o JWT apos criado
   } catch (error) {
-    res.status(500).send({ message: error.message })
+    res.status(500).send({
+      success: false,
+      message: error.message,
+    })
   }
 }
 
 const signin = async (req, res) => {
   try {
     if (!req.body.email || !isValidEmail(req.body.email)) {
-      return res.status(403).send({ message: 'Email inválido!' })
+      return res.status(401).send({
+        success: false,
+        message: 'Email inválido!',
+      })
     }
 
     if (!req.body.password) {
-      return res.status(403).send({ message: 'Senha vazia!' })
+      return res.status(401).send({
+        success: false,
+        message: 'Senha vazia!',
+      })
     }
 
     const userSearch = await User.findOne({
@@ -39,7 +52,10 @@ const signin = async (req, res) => {
     })
 
     if (!userSearch) {
-      return res.status(404).send({ message: 'Usuário não encontrado!' })
+      return res.status(404).send({
+        success: false,
+        message: 'Usuário não encontrado!',
+      })
     }
 
     const passwordIsValid = bcrypt.compareSync(
@@ -49,6 +65,7 @@ const signin = async (req, res) => {
 
     if (!passwordIsValid) {
       return res.status(401).send({
+        success: false,
         message: 'Senha incorreta!',
       })
     }
@@ -63,12 +80,20 @@ const signin = async (req, res) => {
     //req.session.token = token
 
     return res.status(200).send({
+      success: true,
       message: 'Usuário logado!',
       token: token,
-      user: { id: userSearch.id, email: userSearch.email },
+      user: {
+        id: userSearch.id,
+        name: userSearch.name,
+        email: userSearch.email,
+      },
     })
   } catch (error) {
-    res.status(500).send({ message: error.message })
+    res.status(500).send({
+      success: false,
+      message: error.message,
+    })
   }
 }
 
