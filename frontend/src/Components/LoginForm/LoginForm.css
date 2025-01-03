@@ -16,7 +16,7 @@
 
 .wrapper .input-box {
     height: 50px;
-    margin: 30px 0;
+    margin: 20px 0 25px;
     position: relative;
     width: 100%;
 }
@@ -49,29 +49,33 @@
     transform: translateY(-50%);
 }
 
-.wrapper .remeber-forgot {
+.wrapper .remember-forgot {
     display: flex;
     font-size: 15px;
     justify-content: space-between;
-    margin: -15px 0 15px;
+    margin: 10px 0 15px;
 }
 
 .wrapper .error-login {
     color: rgb(250, 73, 73);
-    margin: 20px 10px;
+    margin: 0 10px 20px;
+}
+.wrapper .login-success {
+    color: rgb(12, 145, 0);
+    margin: 0 10px 20px;
 }
 
-.remeber-forgot label input {
+.wrapper .remember-forgot label input {
     accent-color: #fff;
     margin-right: 4px;
 }
 
-.remeber-forgot a { 
+.wrapper .remember-forgot a { 
     color: #fff;
     text-decoration: none;
 }
 
-.remeber-forgot a:hover {
+.wrapper .remember-forgot a:hover {
     text-decoration: underline;
 }
 
