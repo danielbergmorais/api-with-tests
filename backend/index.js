@@ -1,5 +1,8 @@
 const express = require('express')
+const cors = require('cors')
 const routes = require('./routes/user.routes.js')
+const routesAuth = require('./routes/auth.routes.js')
+
 require('dotenv/config')
 
 // Initialization
@@ -9,8 +12,13 @@ const port = process.env.PORT
 // Middlewares
 app.use(express.json())
 
+//CORS
+app.use(cors())
+
 // Routes
 app.use('/', routes)
+// Auth
+app.use('/auth/', routesAuth)
 
 app.get('/', (req, res) => {
   res.send('App is running!')
