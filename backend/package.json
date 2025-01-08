@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --passWithNoTests --detectOpenHandles --coverage",
+    "cove": "jest --passWithNoTests --detectOpenHandles --coverage",
+    "test": "jest --passWithNoTests --detectOpenHandles ",
     "start": "node index.js",
     "lint": "eslint . ",
     "pretty": "npx prettier . --write",
-    "dev": "node start.js"
+    "dev": "node start.js --watch"
   },
   "keywords": [],
   "author": "",

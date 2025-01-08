@@ -2,6 +2,7 @@ const messages = {
   'user-create': 'User created.',
   'user-create-duplicate': 'Email already exist.',
   'user-create-empty_password': 'Password can`t be empty.',
+  'user-create-empty_name': 'Name can`t be empty.',
 
   'user-get': 'User returned.',
 
@@ -25,6 +26,8 @@ const messages = {
   logged: 'User Logged with token',
   token_expired: 'Token expired',
   token_invalid: 'Token invalid',
+
+  required: 'Required',
 }
 
 module.exports = messages

@@ -36,7 +36,44 @@ describe('Usuário', () => {
         expect(body.message).toBe(messages['user-create-duplicate'])
       })
 
-      it('Erro na senha! Code[400]', async () => {
+      it('Usuário sem nome! Code[400]', async () => {
+        const user = {
+          email: 'test2@email.com',
+          password: '123456',
+        }
+
+        const { body, statusCode } = await request.post('/users').send(user)
+
+        expect(statusCode).toBe(400)
+        expect(body.success).toBeFalsy()
+        expect(body.message).toBe(messages['user-create-empty-fields'])
+      })
+
+      it('Usuário sem nome e email! Code[400]', async () => {
+        const user = {
+          password: '123456',
+        }
+
+        const { body, statusCode } = await request.post('/users').send(user)
+
+        expect(statusCode).toBe(400)
+        expect(body.success).toBeFalsy()
+        expect(body.message).toBe(messages['user-create-empty-fields'])
+      })
+
+      it('Usuário sem dados! Code[400]', async () => {
+        const user = {
+          
+        }
+
+        const { body, statusCode } = await request.post('/users').send(user)
+
+        expect(statusCode).toBe(400)
+        expect(body.success).toBeFalsy()
+        expect(body.message).toBe(messages['user-create-empty-fields'])
+      })
+
+      it('Usuario com senha em branco! Code[400]', async () => {
         const user = {
           name: 'Jane Doe',
           email: 'test2@email.com',
@@ -47,7 +84,7 @@ describe('Usuário', () => {
 
         expect(statusCode).toBe(400)
         expect(body.success).toBeFalsy()
-        expect(body.message).toBe(messages['user-create-empty_password'])
+        expect(body.message).toBe(messages['user-create-empty-fields'])
       })
     })
 
@@ -92,29 +129,37 @@ describe('Usuário', () => {
 
     describe('Update', () => {
       it('Usuário atualizado! Code [200]', async () => {
-        const user = {
-          new_email: 'john@email.com',
-          name: 'John Doe',
-          email: 'test@email.com',
-          password: '654321',
-        }
-        const { body, statusCode } = await request.put('/users/').send(user)
+        const userEmail = 'test@email.com'
+        await request.get(`/users/${userEmail}`).then(async (res) => {
+          const user = {
+            name: 'John Doe',
+            email: 'test@email.com',
+            password: '654321',
+          }
 
-        expect(statusCode).toBe(200)
-        expect(body.success).toBeTruthy()
-        expect(body.user.name).toBe(user.name)
-        expect(body.message).toBe(messages['user-update'])
+          const userID = res.body.user.id
+          const { body, statusCode } = await request
+            .put(`/users/${userID}`)
+            .send(user)
+          expect(statusCode).toBe(200)
+          expect(body.success).toBeTruthy()
+          expect(body.user.name).toBe(user.name)
+          expect(body.message).toBe(messages['user-update'])
+        })
       })
 
       it('Usuário Não encontrado! Code [404]', async () => {
+        const userID = 'ce00ef28-a1fd-429c-92b6-8c61120a2fda'
+
         const user = {
-          new_email: 'john@email.com',
           name: 'John Doe',
           email: 'not@found.com',
           password: '654321',
         }
 
-        const { body, statusCode } = await request.put('/users/').send(user)
+        const { body, statusCode } = await request
+          .put(`/users/${userID}`)
+          .send(user)
         expect(statusCode).toBe(404)
         expect(body.success).toBeFalsy()
         expect(body.message).toBe(messages['user-not_found'])

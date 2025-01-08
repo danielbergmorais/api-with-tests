@@ -2,6 +2,8 @@ const messages = {
   'user-create': 'Usuário criado!',
   'user-create-duplicate': 'Email já registrado.',
   'user-create-empty_password': 'Senha não pode estar vazia.',
+  'user-create-empty_name': 'Senha não pode estar vazia.',
+  'user-create-empty-fields': 'Os campos não podem ser vazios!',
 
   'user-get': 'Usuário retornado!',
 
@@ -26,6 +28,8 @@ const messages = {
   not_logged: 'Não esta logado',
   token_expired: 'Token Expirado',
   token_invalid: 'Token inválido',
+
+  required: 'Obrigatório',
 }
 
 module.exports = messages

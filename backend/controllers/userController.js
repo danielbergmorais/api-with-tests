@@ -1,56 +1,58 @@
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
-const { isUUID, isValidEmail } = require('../helpers/')
+const { isUUID, isValidEmail, requireFields } = require('../helpers/')
 const messages = require('../languages/pt-BR')
 const saltRounds = 10
 
 const create = async (req, res) => {
   try {
-    if (!req.body.email && !isValidEmail(req.body.email)) {
-      res.status(405).json({
+    const errors = requireFields(req.body, ['name', 'email', 'password'])
+
+    if (Object.keys(errors).length > 0) {
+      res.status(400).json({
         success: false,
-        message: messages['not_allowed'],
+        message: messages['user-create-empty-fields'],
+        errors: errors,
+      })
+    } else if (!isValidEmail(req.body.email)) {
+      res.status(400).json({
+        success: false,
+        message: messages['user-login-invalid_email'],
       })
     } else {
       const user = await User.findOne({ where: { email: req.body.email } })
+
       if (user !== null) {
         res.status(409).json({
           success: false,
           message: messages['user-create-duplicate'],
         })
       } else {
-        if (req.body.password.length == 0) {
-          res.status(400).json({
-            success: false,
-            message: messages['user-create-empty_password'],
+        bcrypt
+          .hash(req.body.password, saltRounds)
+          .then(async (hash) => {
+            await User.create({
+              name: req.body.name,
+              email: req.body.email,
+              password: hash,
+            }).then((userCreated) => {
+              res.status(201).send({
+                success: true,
+                message: messages['user-create'],
+                user: {
+                  id: userCreated.id,
+                  name: userCreated.name,
+                  email: userCreated.email,
+                },
+              })
+            })
           })
-        } else {
-          bcrypt
-            .hash(req.body.password, saltRounds)
-            .then(async (hash) => {
-              await User.create({
-                name: req.body.name,
-                email: req.body.email,
-                password: hash,
-              }).then((resultCreate) => {
-                res.status(201).send({
-                  success: true,
-                  message: messages['user-create'],
-                  user: {
-                    id: resultCreate.id,
-                    name: resultCreate.name,
-                    email: resultCreate.email,
-                  },
-                })
-              })
+          .catch((err) => {
+            res.status(418).json({
+              success: false,
+              message: messages['user-error_password'],
             })
-            .catch((err) => {
-              res.status(418).json({
-                success: false,
-                message: messages['user-error_password'],
-              })
-            })
-        }
+          })
       }
     }
   } catch (error) {
@@ -84,15 +86,13 @@ const get = async (req, res) => {
 }
 
 const update = async (req, res) => {
-  if (!req.body.email && !isValidEmail(req.body.email)) {
+  if (!req.body.email && !isValidEmail(req.body.email) && !req.params.id) {
     res.status(405).json({
       success: false,
       message: messages['not_allowed'],
     })
   } else {
-    let user
-
-    user = await User.findOne({ where: { email: req.body.email } })
+    let user = await User.findOne({ where: { id: req.params.id } })
     let userUpdate = null
 
     if (user == null) {
@@ -101,36 +101,39 @@ const update = async (req, res) => {
         message: messages['user-not_found'],
       })
     } else {
-      if (req.body.password !== null && req.body.password.length > 0) {
-        await bcrypt
-          .hash(req.body.password, saltRounds)
-          .then(async (hash) => {
-            userUpdate = await User.update(
-              {
-                name: req.body.name,
-                email: req.body.email,
-                password: hash,
-              },
-              {
-                where: {
-                  id: user.id,
+      let pass = req.body.password
+      
+      if (pass && !/^ *$/.test(pass)) {
+        if (pass.length > 0)
+          await bcrypt
+            .hash(req.body.password, saltRounds)
+            .then(async (hash) => {
+              userUpdate = await User.update(
+                {
+                  name: req.body.name,
+                  email: req.body.email,
+                  password: hash,
                 },
-                returning: true,
-              }
-            )
-          })
-          .catch((err) => {
-            console.error(err.message)
-            res.status(418).json({
-              success: false,
-              message: messages['user-error_password'],
+                {
+                  where: {
+                    id: user.id,
+                  },
+                  returning: true,
+                }
+              )
             })
-          })
+            .catch((err) => {
+
+              res.status(418).json({
+                success: false,
+                message: messages['user-error_password'],
+              })
+            })
       } else {
         userUpdate = await User.update(
           {
             name: req.body.name,
-            email: req.body.new_email,
+            email: req.body.email
           },
           {
             where: {
