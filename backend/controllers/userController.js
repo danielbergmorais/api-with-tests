@@ -86,7 +86,13 @@ const get = async (req, res) => {
 }
 
 const update = async (req, res) => {
-  if (!req.body.email && !isValidEmail(req.body.email) && !req.params.id) {
+
+  if ((!req.body.email && !isValidEmail(req.body.email)) || !req.params.id) {
+    res.status(405).json({
+      success: false,
+      message: messages['not_allowed'],
+    })
+  } else if (!isUUID(req.params.id)) {
     res.status(405).json({
       success: false,
       message: messages['not_allowed'],
@@ -102,9 +108,9 @@ const update = async (req, res) => {
       })
     } else {
       let pass = req.body.password
-      
+
       if (pass && !/^ *$/.test(pass)) {
-        if (pass.length > 0)
+        if (pass.length > 0) {
           await bcrypt
             .hash(req.body.password, saltRounds)
             .then(async (hash) => {
@@ -123,17 +129,17 @@ const update = async (req, res) => {
               )
             })
             .catch((err) => {
-
               res.status(418).json({
                 success: false,
                 message: messages['user-error_password'],
               })
             })
+        }
       } else {
         userUpdate = await User.update(
           {
             name: req.body.name,
-            email: req.body.email
+            email: req.body.email,
           },
           {
             where: {
@@ -172,11 +178,11 @@ const remove = async (req, res) => {
   } else {
     if (isUUID(req.params.id)) {
       user = await User.findOne({ where: { id: req.params.id } })
-    } else {
+    } else if(isValidEmail(req.params.id)) {
       user = await User.findOne({ where: { email: req.body.email } })
     }
 
-    if (user === null) {
+    if (user == null) {
       res.status(404).json({
         success: false,
         message: messages['user-not_found'],

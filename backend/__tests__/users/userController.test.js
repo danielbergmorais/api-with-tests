@@ -62,9 +62,7 @@ describe('Usuário', () => {
       })
 
       it('Usuário sem dados! Code[400]', async () => {
-        const user = {
-          
-        }
+        const user = {}
 
         const { body, statusCode } = await request.post('/users').send(user)
 
@@ -109,6 +107,15 @@ describe('Usuário', () => {
 
       it('Usuário NÃO encontrado [UUID]! Code [404]', async () => {
         const userId = '11ab7ac7-ee0c-49c4-b0a1-adc7b5bb4587'
+        const { body, statusCode } = await request.get(`/users/${userId}`)
+
+        expect(statusCode).toBe(404)
+        expect(body.success).toBeFalsy()
+        expect(body.message).toBe(messages['user-not_found'])
+      })
+
+      it('Usuário com UUID Incorreta [UUID]! Code [404]', async () => {
+        const userId = '1aab7ac7-ee0c-49c4-b0a1-adc7b5bb45817'
         const { body, statusCode } = await request.get(`/users/${userId}`)
 
         expect(statusCode).toBe(404)
@@ -163,6 +170,23 @@ describe('Usuário', () => {
         expect(statusCode).toBe(404)
         expect(body.success).toBeFalsy()
         expect(body.message).toBe(messages['user-not_found'])
+      })
+
+      it('Usuário Com UUID Incorreta! Code [405]', async () => {
+        const userID = 'ce00ef28-a1fd-429c-92b6-8c61120a2fda24d'
+
+        const user = {
+          name: 'John Doe',
+          email: 'not@found.com',
+          password: '654321',
+        }
+
+        const { body, statusCode } = await request
+          .put(`/users/${userID}`)
+          .send(user)
+        expect(statusCode).toBe(405)
+        expect(body.success).toBeFalsy()
+        expect(body.message).toBe(messages['not_allowed'])
       })
     })
 

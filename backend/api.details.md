@@ -1,4 +1,3 @@
-
 ## API Documentação
 
 #### Criar usuário
@@ -93,7 +92,6 @@
 > | ------------ | ------------------ |
 > | Content-Type | `application/json` |
 
-
 ##### Responses
 
 > | http code | content-type       | response                                                             |
@@ -112,6 +110,7 @@
 ---
 
 #### Editar usuário
+
 <details>
  <summary><code>UPDATE</code> <code><b>/</b></code> <code>(Editar os dados de um usuário)</code></summary>
 
@@ -132,12 +131,12 @@
 }
 ```
 
-> | name      | type     | data send | example                         |
-> | --------- | -------- | --------- | ------------------------------- |
-> | id        | required | UUID      | `UUID`                          |
-> | email     | required | string    | `{"email":"my@email.com"}`      |
-> | name      | required | string    | `{"name":"My Email"}`           |
-> | password  | required | string    | `{"password":"123456"}`         |
+> | name     | type     | data send | example                    |
+> | -------- | -------- | --------- | -------------------------- |
+> | id       | required | UUID      | `UUID`                     |
+> | email    | required | string    | `{"email":"my@email.com"}` |
+> | name     | required | string    | `{"name":"My Email"}`      |
+> | password | required | string    | `{"password":"123456"}`    |
 
 ##### Responses
 
@@ -164,9 +163,9 @@
 
 ##### Parameters
 
-> | name  | type     | data send | example                    |
-> | ----- | -------- | --------- | -------------------------- |
-> | id    | required | UUID      | `UUID`                     |
+> | name | type     | data send | example |
+> | ---- | -------- | --------- | ------- |
+> | id   | required | UUID      | `UUID`  |
 
 ##### Responses
 
